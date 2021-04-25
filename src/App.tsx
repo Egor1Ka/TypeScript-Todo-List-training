@@ -1,24 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Navbar } from './components/Navbar';
+import { TodoForm } from './components/TodoForm';
+import { Todolist } from './components/TodoList';
+import { ITodo } from './interface';
 
-function App() {
+const App:React.FC=()=> {
+  Date.now()
+  const [todos,setTodos] = useState<ITodo[]>([]);
+
+  const addHendler=(title:string)=>{
+    const newTodo={
+      title,
+      id:Date.now(),
+      completed :false
+    }
+    //setTodos([newTodo,...todos]);
+    setTodos(prev=>[newTodo,...prev])
+  }
+  
+  const toggleHendler =(id:number)=>{
+    setTodos(prev=>
+      prev.map(todo=>{
+        if(todo.id === id){
+          todo.completed = !todo.completed;
+        }
+        return todo;
+    }))
+  }
+
+  const removeHendler = (id:number)=>{
+    setTodos(prev=>prev.filter(todo=>todo.id !== id))
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Navbar/>
+      <div className ='container'>
+        <TodoForm onAdd={addHendler}/>
+        <Todolist todos = {todos}
+        toggleHendler={toggleHendler}
+        removeHendler={removeHendler}/>
+      </div>
     </div>
   );
 }
